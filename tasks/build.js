@@ -182,7 +182,7 @@ module.exports = function(options) {
 
 		var cssPreprocessor = config.cssPreprocessor || require('gulp-sass');
 
-		var fileExt = config.fileExt || '.scss';
+		var fileExt = themeConfig.cssFileExt || config.fileExt || '.scss';
 
 		config = _.omit(config, ['cssPreprocessor', 'fileExt']);
 
