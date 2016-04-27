@@ -224,7 +224,7 @@ module.exports = function(options) {
 				return cb();
 			}
 
-			var themeId = _.trimRight(lfrThemeConfig.getConfig(true).name, '-theme');
+			var themeId = lfrThemeConfig.getConfig(true).name.replace(/(?:-theme)+$/i, '');
 
 			lookAndFeelUtil.correctJSONIdentifiers(lookAndFeelJSON, themeId);
 
