@@ -49,6 +49,7 @@ module.exports = function(options) {
 		var fileName = themeConfig.version == '6.2' ? 'custom.css' : '_custom.scss';
 
 		gulp.src(path.join(pathBuild, 'css', fileName))
+			.pipe(plugins.sort())
 			.pipe(plugins.inject(sources, {
 				starttag: '/* inject:imports */',
 				endtag: '/* endinject */',
