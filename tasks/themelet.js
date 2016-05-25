@@ -40,7 +40,8 @@ module.exports = function(options) {
 
 		var sources = gulp.src(themeSrcPaths, {
 			read: false
-		}).pipe(vinylPaths(function(path, cb) {
+		}).pipe(plugins.sort())
+		  .pipe(vinylPaths(function(path, cb) {
 			themeletSources = true;
 
 			cb();
