@@ -40,7 +40,8 @@ module.exports = function(options) {
 
 		var sources = gulp.src(themeSrcPaths, {
 			read: false
-		}).pipe(vinylPaths(function(path, cb) {
+		}).pipe(plugins.sort())
+		  .pipe(vinylPaths(function(path, cb) {
 			themeletSources = true;
 
 			cb();
@@ -49,7 +50,6 @@ module.exports = function(options) {
 		var fileName = themeConfig.version == '6.2' ? 'custom.css' : '_custom.scss';
 
 		gulp.src(path.join(pathBuild, 'css', fileName))
-			.pipe(plugins.sort())
 			.pipe(plugins.inject(sources, {
 				starttag: '/* inject:imports */',
 				endtag: '/* endinject */',
