@@ -4,7 +4,7 @@ var del = require('del');
 var path = require('path');
 var test = require('ava');
 
-var gulpBlackList = require('../../../lib/upgrade/6.2/gulp_black_list.js');
+var gulpBlackList = require('../../../lib/upgrade/7.0/gulp_black_list.js');
 var testUtil = require('../../util');
 
 var gulp;

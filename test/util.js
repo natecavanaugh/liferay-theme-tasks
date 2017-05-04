@@ -150,7 +150,7 @@ function deleteJsFileFromCache(filePath) {
 function deleteJsFromCache() {
 	deleteDirJsFromCache('../lib');
 	deleteDirJsFromCache('../lib/prompts');
-	deleteDirJsFromCache('../lib/upgrade/6.2');
+	deleteDirJsFromCache('../lib/upgrade/7.0');
 	deleteDirJsFromCache('../tasks');
 
 	deleteJsFileFromCache('../index.js');
