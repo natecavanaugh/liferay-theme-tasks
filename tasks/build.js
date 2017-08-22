@@ -156,7 +156,9 @@ module.exports = function(options) {
 					{
 						match: /@import\s+url\s*\(\s*['\"]?(.+\.css)['\"]?/g,
 						replacement: function(match, m1) {
-							return '@import url(' + m1 + '?t=' + Date.now();
+							return themeConfig.version === '6.2' ?
+									'@import url(' + m1 :
+									'@import url(' + m1 + '?t=' + Date.now();
 						}
 					}
 				]
