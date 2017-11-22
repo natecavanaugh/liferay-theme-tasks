@@ -1,6 +1,5 @@
 'use strict';
 
-var divert = require('./lib/divert');
 var {
 	checkDependencySources,
 	getAndUpdateIfNeededRubySass,
@@ -9,17 +8,15 @@ var {
 } = require('./lib/doctor');
 var lfrThemeConfig = require('../lib/liferay_theme_config');
 
+var divert = require('./lib/divert');
+var { checkMissingDeps } = divert('doctor');
+
 module.exports = function(themeConfig, haltOnMissingDeps) {
 	themeConfig = themeConfig || lfrThemeConfig.getConfig(true);
 
 	if (!themeConfig) {
 		return;
 	}
-
-	var { checkMissingDeps } = divert(
-		themeConfig.liferayTheme.version,
-		'doctor',
-	);
 
 	var dependencies = getDependencies(themeConfig);
 
