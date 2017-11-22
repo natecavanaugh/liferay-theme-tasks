@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var del = require('del');
-var doctor = require('../../module/doctor.js');
+var doctor = require('../../lib/doctor.js');
 var fs = require('fs-extra');
 var os = require('os');
 var path = require('path');

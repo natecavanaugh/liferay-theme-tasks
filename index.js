@@ -6,7 +6,7 @@ var liferayPluginTasks = require('liferay-plugin-node-tasks');
 var path = require('path');
 var plugins = require('gulp-load-plugins')();
 
-var doctor = require('./module/doctor');
+var doctor = require('./lib/doctor');
 var lfrThemeConfig = require('./lib/liferay_theme_config');
 var versionControl = require('./lib/version_control.js');
 
