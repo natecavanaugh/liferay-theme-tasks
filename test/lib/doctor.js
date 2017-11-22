@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var del = require('del');
-var doctor = require('../../lib/doctor.js');
+var doctor = require('../../module/doctor.js');
 var fs = require('fs-extra');
 var os = require('os');
 var path = require('path');
@@ -12,20 +12,27 @@ var initCwd = process.cwd();
 var tempPath = path.join(os.tmpdir(), 'liferay-theme-tasks', 'doctor-fixtures');
 
 test.cb.before(function(t) {
-	fs.copy(path.join(__dirname, '../fixtures/json/_package_outdated_settings.json'), path.join(tempPath, 'package.json'), function(err) {
-		if (err) throw err;
+	fs.copy(
+		path.join(
+			__dirname,
+			'../fixtures/json/_package_outdated_settings.json',
+		),
+		path.join(tempPath, 'package.json'),
+		function(err) {
+			if (err) throw err;
 
-		process.chdir(tempPath);
+			process.chdir(tempPath);
 
-		t.end();
-	});
+			t.end();
+		},
+	);
 });
 
 test.after(function() {
 	process.chdir(initCwd);
 
 	del.sync(path.join(tempPath, '**'), {
-		force: true
+		force: true,
 	});
 });
 
@@ -37,8 +44,13 @@ test('should throw appropriate error message', function(t) {
 	}, 'Missing 2 theme dependencies');
 });
 
-test('should look for dependencies regardless if devDependency or not', function(t) {
-	var pkg = require(path.join(__dirname, '../fixtures/json/_package_mixed_dependencies.json'));
+test('should look for dependencies regardless if devDependency or not', function(
+	t,
+) {
+	var pkg = require(path.join(
+		__dirname,
+		'../fixtures/json/_package_mixed_dependencies.json',
+	));
 
 	t.notThrows(function() {
 		doctor(pkg, true);
