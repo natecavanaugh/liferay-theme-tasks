@@ -12,7 +12,13 @@ var lfrThemeConfig = require('../lib/liferay_theme_config');
 var lookAndFeelUtil = require('../lib/look_and_feel_util');
 var themeUtil = require('../lib/util');
 
-var divert = require('./divert');
+var divert = require('../lib/divert');
+var { 
+	concatBourbonIncludePaths,
+	getFixAtDirectivesPatterns, 
+	taskPrepCss,
+	taskWar 
+} = divert('build');
 var { getDependencyName } = divert('dependencies');
 
 var STR_FTL = 'ftl';
@@ -96,7 +102,7 @@ module.exports = function(options) {
 		var gulpSourceMaps = require('gulp-sourcemaps');
 
 		var sassOptions = getSassOptions(options.sassOptions, {
-			includePaths: getSassInlcudePaths(themeConfig.version, themeConfig.rubySass),
+			includePaths: getSassIncludePaths(themeConfig.rubySass),
 			sourceMap: false
 		});
 
@@ -121,7 +127,7 @@ module.exports = function(options) {
 
 		var sassOptions = getSassOptions(options.sassOptions, {
 			compass: true,
-			loadPath: getSassInlcudePaths(themeConfig.version, themeConfig.rubySass),
+			loadPath: getSassIncludePaths(themeConfig.rubySass),
 			sourcemap: false
 		});
 
@@ -145,37 +151,7 @@ module.exports = function(options) {
 	});
 
 	gulp.task('build:fix-at-directives', function() {
-		var keyframeRulesReplace = function(match, m1, m2) {
-			return _.map(m1.split(','), function(item) {
-				return item.replace(/.*?(from|to|[0-9\.]+%)/g, '$1');
-			}).join(',') + m2;
-		};
-
-		var patterns = [
-			{
-				match: /(@font-face|@page|@-ms-viewport)\s*({\n\s*)(.*)\s*({)/g,
-				replacement: function(match, m1, m2, m3, m4) {
-					return m3 + m2 + m1 + ' ' + m4;
-				}
-			},
-			{
-				match: /(@-ms-keyframes.*{)([\s\S]+?)(}\s})/g,
-				replacement: function(match, m1, m2, m3) {
-					m2 = m2.replace(/(.+?)(\s?{)/g, keyframeRulesReplace);
-
-					return m1 + m2 + m3;
-				}
-			}
-		];
-
-		if (themeConfig.version !== '6.2') {
-			patterns.push({
-				match: /@import\s+url\s*\(\s*['\"]?(.+\.css)['\"]?/g,
-				replacement: function(match, m1) {
-					return '@import url(' + m1 + '?t=' + Date.now();
-				}
-			});
-		}
+		var patterns = getFixAtDirectivesPatterns();
 
 		return gulp.src(pathBuild + '/css/*.css')
 			.pipe(replace({
@@ -274,14 +250,7 @@ module.exports = function(options) {
 		});
 	});
 
-	gulp.task('build:prep-css', function(cb) {
-		if (themeConfig.version === '6.2') {
-			runSequence('build:rename-css-files', cb);
-		}
-		else {
-			cb();
-		}
-	});
+	gulp.task('build:prep-css', (done) => taskPrepCss(gulp, done));
 
 	gulp.task('build:move-compiled-css', function() {
 		return gulp.src(pathBuild + '/_css/**/*')
@@ -334,15 +303,7 @@ module.exports = function(options) {
 			.on('end', cb);
 	});
 
-	gulp.task('build:war', function(done) {
-		var sequence = ['plugin:war', done];
-
-		if (themeConfig.version !== '6.2') {
-			sequence.splice(0, 0, 'plugin:version');
-		}
-
-		runSequence.apply(this, sequence);
-	});
+	gulp.task('build:war', (done) => taskWar(gulp, done));
 
 	function getSrcPathConfig() {
 		return {
@@ -422,16 +383,12 @@ function getLiferayThemeJSON(themePath) {
 	return require(path.join(themePath, 'package.json')).liferayTheme;
 }
 
-function getSassInlcudePaths(version, rubySass) {
+function getSassIncludePaths(rubySass) {
 	var includePaths = [
 		themeUtil.resolveDependency(getDependencyName('mixins')),
 	];
 
-	if (version !== '6.2') {
-		var createBourbonFile = require('../lib/bourbon_dependencies').createBourbonFile;
-
-		includePaths = includePaths.concat(createBourbonFile());
-	}
+	includePaths = concatBourbonIncludePaths(includePaths);
 
 	if (!rubySass) {
 		includePaths.push(path.dirname(require.resolve('compass-mixins')));
