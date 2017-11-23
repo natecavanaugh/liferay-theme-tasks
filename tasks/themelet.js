@@ -8,6 +8,12 @@ var vinylPaths = require('vinyl-paths');
 
 var lfrThemeConfig = require('../lib/liferay_theme_config');
 
+var divert = require('../lib/divert');
+var { 
+	getCustomCssFileName,
+	getDefaultTemplateLanguage
+} = divert('themelet');
+
 var gutil = plugins.util;
 
 var themeConfig = lfrThemeConfig.getConfig();
@@ -45,7 +51,7 @@ module.exports = function(options) {
 			cb();
 		}));
 
-		var fileName = themeConfig.version === '6.2' ? 'custom.css' : '_custom.scss';
+		var fileName = getCustomCssFileName();
 
 		gulp.src(path.join(pathBuild, 'css', fileName))
 			.pipe(plugins.inject(sources, {
@@ -87,11 +93,7 @@ module.exports = function(options) {
 			cb();
 		}));
 
-		var defaultTemplateLanguage = 'ftl';
-
-		if (themeConfig.version === '6.2') {
-			defaultTemplateLanguage = 'vm';
-		}
+		var defaultTemplateLanguage = getDefaultTemplateLanguage();
 
 		var templateLanguage = themeConfig.templateLanguage || defaultTemplateLanguage;
 
