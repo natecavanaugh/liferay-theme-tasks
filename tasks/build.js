@@ -11,7 +11,8 @@ var replace = require('gulp-replace-task');
 var lfrThemeConfig = require('../lib/liferay_theme_config');
 var lookAndFeelUtil = require('../lib/look_and_feel_util');
 var themeUtil = require('../lib/util');
-var versionMap = require('../lib/version_map');
+
+var divert = require('../lib/divert');
 
 var STR_FTL = 'ftl';
 
@@ -56,7 +57,12 @@ module.exports = function(options) {
 	});
 
 	gulp.task('build:base', function() {
-		var sourceFiles = [path.join(themeUtil.resolveDependency(versionMap.getDependencyName('unstyled')), baseThemeGlob)];
+		var sourceFiles = [
+			path.join(
+				themeUtil.resolveDependency(divert('dependencies').getDependencyName('unstyled')),
+				baseThemeGlob,
+			),
+		];
 
 		sourceFiles = getBaseThemeDependencies(process.cwd(), sourceFiles);
 
@@ -368,12 +374,25 @@ function getBaseThemeDependencies(baseThemePath, dependencies) {
 		dependencies.push(path.resolve(baseThemePath, 'src/**/*'));
 
 		return getBaseThemeDependencies(baseThemePath, dependencies);
-	}
-	else if (baseTheme === 'styled' || baseTheme === 'classic') {
-		dependencies.splice(1, 0, path.join(themeUtil.resolveDependency(versionMap.getDependencyName('styled')), baseThemeGlob));
+	} else if (baseTheme === 'styled' || baseTheme === 'classic') {
+		dependencies.splice(
+			1,
+			0,
+			path.join(
+				themeUtil.resolveDependency(divert('dependencies').getDependencyName('styled')),
+				baseThemeGlob,
+			),
+		);
 
 		if (baseTheme === 'classic') {
-			dependencies.splice(2, 0, path.join(themeUtil.resolveDependency(versionMap.getDependencyName('classic')), baseThemeGlob));
+			dependencies.splice(
+				2,
+				0,
+				path.join(
+					themeUtil.resolveDependency(divert('dependencies').getDependencyName('classic')),
+					baseThemeGlob,
+				),
+			);
 		}
 
 		return dependencies;
@@ -404,7 +423,7 @@ function getLiferayThemeJSON(themePath) {
 
 function getSassInlcudePaths(version, rubySass) {
 	var includePaths = [
-		themeUtil.resolveDependency(versionMap.getDependencyName('mixins'))
+		themeUtil.resolveDependency(divert('dependencies').getDependencyName('mixins')),
 	];
 
 	if (version !== '6.2') {
