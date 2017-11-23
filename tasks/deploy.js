@@ -9,6 +9,8 @@ var lfrThemeConfig = require('../lib/liferay_theme_config');
 var themeUtil = require('../lib/util');
 var WarDeployer = require('../lib/war_deployer');
 
+var divert = require('../lib/divert');
+
 var livereload = plugins.livereload;
 
 var themeConfig = lfrThemeConfig.getConfig(true);
@@ -40,20 +42,8 @@ module.exports = function(options) {
 		runSequence.apply(this, sequence);
 	});
 
-	gulp.task('deploy:css-files', function() {
-		var version = themeConfig.liferayTheme.version;
-
-		var srcPath = path.join(pathBuild, 'css/*.css');
-
-		var filePath = store.get('changedFile').path;
-
-		if (version === '6.2' && !themeUtil.isSassPartial(filePath)) {
-			var fileName = path.basename(filePath);
-
-			srcPath = path.join(pathBuild, 'css', fileName);
-		}
-
-		return fastDeploy(srcPath, pathBuild);
+	gulp.task('deploy:css-files', () => {
+		return divert('deploy').taskCssFiles(options, fastDeploy)
 	});
 
 	gulp.task('deploy:file', function() {
