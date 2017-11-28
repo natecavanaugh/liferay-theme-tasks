@@ -6,6 +6,7 @@ var livereload = require('gulp-livereload');
 var path = require('path');
 var plugins = require('gulp-load-plugins')();
 
+var divert = require('../lib/divert');
 var lfrThemeConfig = require('../lib/liferay_theme_config.js');
 var WatchSocket = require('../lib/watch_socket.js');
 
@@ -40,32 +41,9 @@ module.exports = function(options) {
 	var connectParams = _.assign({}, CONNECT_PARAMS, options.gogoShellConfig);
 
 	gulp.task('watch', function() {
-		options.watching = true;
-
-		if (themeConfig.version === '6.2') {
-			startWatch();
-		}
-		else {
-			store.set('appServerPathPlugin', webBundleDir);
-
-			runSequence('build', 'watch:clean', 'watch:osgi:clean', 'watch:setup', function(err) {
-				if (err) {
-					throw err;
-				}
-
-				var watchSocket = startWatchSocket();
-
-				watchSocket.connect(connectParams)
-					.then(function() {
-						return watchSocket.deploy();
-					})
-					.then(function() {
-						store.set('webBundleDir', 'watching');
-
-						startWatch();
-					});
-			});
-		}
+		divert('watch').taskWatch(
+			options, startWatch, startWatchSocket, webBundleDir, connectParams
+		);
 	});
 
 	gulp.task('watch:clean', function(cb) {
@@ -146,11 +124,7 @@ module.exports = function(options) {
 
 			var rootDir = filePathArray.length ? filePathArray[0] : '';
 
-			var taskArray = ['deploy'];
-
-			if (themeConfig.version !== '6.2') {
-				taskArray = ['deploy:gogo'];
-			}
+			var taskArray = [divert('watch').deployTask];
 
 			if (!fullDeploy && store.get('deployed')) {
 				taskArray = getTaskArray(rootDir, taskArray);
