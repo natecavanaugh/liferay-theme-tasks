@@ -11,13 +11,22 @@
     "theme"
   ],
   "scripts": {
-    "test": "nyc ava"
+    "test": "nyc ava",
+    "format": "prettier-eslint --write '*.js' 'lib/**/*.js' 'tasks/**/*.js' 'test/**/*.js'",
+    "lint": "eslint '*.js' 'lib/**/*.js' 'tasks/**/*.js' 'test/**/*.js'",
+    "precommit": "lint-staged"
   },
   "ava": {
     "concurrency": 5,
     "files": [
       "test/lib/**/*.js",
       "test/tasks/**/*.js"
+    ]
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier-eslint --write lib/**/*.js tasks/**/*.js test/**/*.js",
+      "git add"
     ]
   },
   "nyc": {
@@ -100,13 +109,18 @@
     "bluebird": "^3.3.4",
     "chai": "^1.10.0",
     "chai-fs": "^0.1.0",
+    "eslint": "^4.11.0",
+    "eslint-config-liferay": "^2.0.0",
     "gogo-shell-helper": "^0.0.8",
     "gulp": "^3.9.0",
     "gulp-ruby-sass": "^2.0.6",
     "gulp-sass": "^3.1.0",
+    "husky": "^0.14.2",
     "liferay-theme-deps-6.2": "*",
     "liferay-theme-deps-7.0": "*",
+    "lint-staged": "^4.0.0",
     "nyc": "^6.4.4",
+    "prettier-eslint-cli": "^4.4.0",
     "sinon": "^1.17.2"
   }
 }
