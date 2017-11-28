@@ -6,7 +6,7 @@ var liferayPluginTasks = require('liferay-plugin-node-tasks');
 var path = require('path');
 var plugins = require('gulp-load-plugins')();
 
-var doctor = require('./lib/doctor');
+var divert = require('./lib/divert');
 var lfrThemeConfig = require('./lib/liferay_theme_config');
 var versionControl = require('./lib/version_control.js');
 
@@ -42,7 +42,7 @@ function register(options) {
 
 	var halt = _.intersection(['build', 'deploy', 'watch'], options.argv._).length > 0;
 
-	doctor(null, halt);
+	divert('doctor').doctor(null, halt);
 
 	if (!options.argv['skip-update-check']) {
 		process.once('beforeExit', function() {
