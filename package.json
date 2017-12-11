@@ -62,7 +62,6 @@
     "cross-spawn": "^2.2.3",
     "del": "^1.1.1",
     "diff": "^1.4.0",
-    "event-stream": "^3.3.4",
     "fs-extra": "^0.24.0",
     "globby": "^4.0.0",
     "gogo-shell": "*",

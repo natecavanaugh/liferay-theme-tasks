@@ -4,12 +4,12 @@ var _ = require('lodash');
 var fs = require('fs-extra');
 var path = require('path');
 var plugins = require('gulp-load-plugins')();
-var es = require('event-stream');
 
 var lfrThemeConfig = require('../lib/liferay_theme_config');
 var themeUtil = require('../lib/util');
 var WarDeployer = require('../lib/war_deployer');
 
+var gutil = plugins.util;
 var livereload = plugins.livereload;
 
 var themeConfig = lfrThemeConfig.getConfig(true);
@@ -119,15 +119,15 @@ module.exports = function(options) {
 			stream.pipe(gulp.dest(fastDeployPaths.tempDest));
 		}
 		
-		stream.pipe(es.map(function(file, done) {
-		    var filePath = file.path;
+		stream.pipe(gutil.buffer(function(err, files) {
+			for(let file of files) {
+			    var filePath = file.path;
 
-			filePath = filePath.substring(fastDeployPaths.dest.length);
-			filePath = `/${themeConfig.name}${filePath}`;
-		    
-			livereload.changed(filePath);
-			
-		    done(null, file);
+				filePath = filePath.substring(fastDeployPaths.dest.length);
+				filePath = `/${themeConfig.name}${filePath}`;
+			    
+				livereload.changed(filePath);
+			}
 	  	}));
 
 		return stream;
