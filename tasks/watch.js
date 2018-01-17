@@ -5,11 +5,11 @@ var del = require('del');
 var livereload = require('gulp-livereload');
 var path = require('path');
 var plugins = require('gulp-load-plugins')();
+var log = require('fancy-log');
+var colors = require('ansi-colors');
 
 var lfrThemeConfig = require('../lib/liferay_theme_config.js');
 var WatchSocket = require('../lib/watch_socket.js');
-
-var gutil = plugins.util;
 
 var themeConfig = lfrThemeConfig.getConfig();
 
@@ -169,7 +169,7 @@ module.exports = function(options) {
 
 		watchSocket.on('error', function(err) {
 			if (err.code === 'ECONNREFUSED' || err.errno === 'ECONNREFUSED') {
-				gutil.log(gutil.colors.yellow('Cannot connect to gogo shell. Please ensure local Liferay instance is running.'));
+				log(colors.yellow('Cannot connect to gogo shell. Please ensure local Liferay instance is running.'));
 			}
 		});
 

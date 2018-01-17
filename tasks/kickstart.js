@@ -8,7 +8,8 @@ var plugins = require('gulp-load-plugins')();
 var KickstartPrompt = require('../lib/prompts/kickstart_prompt');
 var lfrThemeConfig = require('../lib/liferay_theme_config');
 
-var gutil = plugins.util;
+var log = require('fancy-log');
+var colors = require('ansi-colors');
 
 module.exports = function(options) {
 	var gulp = options.gulp;
@@ -16,10 +17,10 @@ module.exports = function(options) {
 	var pathSrc = options.pathSrc;
 
 	gulp.task('kickstart', function(cb) {
-		gutil.log(
-			gutil.colors.yellow('Warning:'),
+		log(
+			colors.yellow('Warning:'),
 			'the',
-			gutil.colors.cyan('kickstart'),
+			colors.cyan('kickstart'),
 			'task will potentially overwrite files in your src directory'
 		);
 
@@ -57,7 +58,7 @@ module.exports = function(options) {
 					});
 			}
 			else {
-				gutil.log(gutil.colors.yellow('Theme not selected'));
+				log(colors.yellow('Theme not selected'));
 
 				cb();
 			}

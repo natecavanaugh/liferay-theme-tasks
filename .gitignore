@@ -4,3 +4,5 @@
 /test/tmp
 /tmp
 liferay-theme.json
+/.idea
+liferay-theme-tasks.iml

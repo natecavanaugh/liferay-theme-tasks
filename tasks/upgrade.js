@@ -3,14 +3,14 @@
 var _ = require('lodash');
 var del = require('del');
 var fs = require('fs-extra');
-var gutil = require('gulp-util');
+var log = require('fancy-log');
+var chalk = require('ansi-colors');
+var PluginError = require('plugin-error');
 var inquirer = require('inquirer');
 var path = require('path');
 var plugins = require('gulp-load-plugins')();
 
 var lfrThemeConfig = require('../lib/liferay_theme_config.js');
-
-var chalk = gutil.colors;
 
 var themeConfig = lfrThemeConfig.getConfig();
 
@@ -39,8 +39,8 @@ module.exports = function(options) {
 			runSequence('upgrade:create-backup-files', function() {
 				versionUpgradeTask(function(err) {
 					if (err) {
-						gutil.log(chalk.red('Error:'), 'something went wrong during the upgrade task, reverting changes.');
-						gutil.log(err);
+						log(chalk.red('Error:'), 'something went wrong during the upgrade task, reverting changes.');
+						log(err);
 
 						runSequence('upgrade:revert-src', cb);
 					}
@@ -51,7 +51,7 @@ module.exports = function(options) {
 			});
 		}
 		else {
-			throw new gutil.PluginError('gulp-theme-upgrader', chalk.red('Version specific upgrade task must return function.'));
+			throw new PluginError('gulp-theme-upgrader', chalk.red('Version specific upgrade task must return function.'));
 		}
 	});
 
@@ -93,7 +93,7 @@ module.exports = function(options) {
 		var backupExists = (fs.existsSync('_backup/src') && fs.statSync('_backup/src').isDirectory());
 
 		if (!backupExists) {
-			throw new gutil.PluginError('gulp-theme-upgrader', chalk.red('No backup files found!'));
+			throw new PluginError('gulp-theme-upgrader', chalk.red('No backup files found!'));
 		}
 
 		inquirer.prompt([
@@ -107,7 +107,7 @@ module.exports = function(options) {
 				runSequence('upgrade:revert-src', cb);
 			}
 			else {
-				gutil.log(chalk.cyan('No files reverted.'));
+				log(chalk.cyan('No files reverted.'));
 
 				cb();
 			}
