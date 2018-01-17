@@ -9,7 +9,8 @@ var lfrThemeConfig = require('../lib/liferay_theme_config');
 var themeUtil = require('../lib/util');
 var WarDeployer = require('../lib/war_deployer');
 
-var gutil = plugins.util;
+var ListStream = require('list-stream');
+
 var livereload = plugins.livereload;
 
 var themeConfig = lfrThemeConfig.getConfig(true);
@@ -119,7 +120,7 @@ module.exports = function(options) {
 			stream.pipe(gulp.dest(fastDeployPaths.tempDest));
 		}
 		
-		stream.pipe(gutil.buffer(function(err, files) {
+		stream.pipe(ListStream(function(err, files) {
 			for(let file of files) {
 			    var filePath = file.path;
 

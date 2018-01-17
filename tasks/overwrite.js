@@ -2,11 +2,10 @@
 
 var _ = require('lodash');
 var fs = require('fs');
-var gutil = require('gulp-util');
+var log = require('fancy-log');
+var chalk = require('ansi-colors');
 var inquirer = require('inquirer');
 var path = require('path');
-
-var chalk = gutil.colors;
 
 var CWD = process.cwd();
 
@@ -78,14 +77,14 @@ module.exports = function(options) {
 		var destFile = chalk.cyan(path.join(themeDirName, pathSrc, filePath));
 		var srcFile = chalk.cyan(path.join(themeDirName, pathBuild, filePath));
 
-		gutil.log(srcFile, 'copied to', destFile);
+		log(srcFile, 'copied to', destFile);
 	}
 
 	function promptFiles(dirPath, cb) {
 		var choices = getFileChoices(dirPath);
 
 		if (dirPath === '.' && !validateBuild(choices)) {
-			gutil.log(chalk.yellow('You must run', chalk.cyan('gulp build'), 'prior to using the overwrite task!'));
+			log(chalk.yellow('You must run', chalk.cyan('gulp build'), 'prior to using the overwrite task!'));
 
 			return cb();
 		}

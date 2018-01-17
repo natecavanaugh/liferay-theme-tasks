@@ -5,10 +5,10 @@ var async = require('async');
 var path = require('path');
 var plugins = require('gulp-load-plugins')();
 var vinylPaths = require('vinyl-paths');
+var log = require('fancy-log');
+var colors = require('ansi-colors');
 
 var lfrThemeConfig = require('../lib/liferay_theme_config');
-
-var gutil = plugins.util;
 
 var themeConfig = lfrThemeConfig.getConfig();
 
@@ -64,9 +64,7 @@ module.exports = function(options) {
 			.pipe(gulp.dest(path.join(pathBuild, 'css')))
 			.on('end', function() {
 				if (!injected && themeletSources && !_.isEmpty(themeConfig.themeletDependencies)) {
-					var colors = gutil.colors;
-
-					gutil.log(colors.yellow('Warning:'), 'Failed to automatically inject themelet styles. Make sure inject tags are present in', colors.magenta(fileName));
+					log(colors.yellow('Warning:'), 'Failed to automatically inject themelet styles. Make sure inject tags are present in', colors.magenta(fileName));
 				}
 
 				cb();
@@ -118,9 +116,7 @@ module.exports = function(options) {
 			.pipe(gulp.dest(path.join(pathBuild, 'templates')))
 			.on('end', function() {
 				if (!injected && themeletSources && !_.isEmpty(themeConfig.themeletDependencies)) {
-					var colors = gutil.colors;
-
-					gutil.log(colors.yellow('Warning:'), 'Failed to automatically inject themelet js. Make sure inject tags are present in', colors.magenta('portal_normal.' + templateLanguage));
+					log(colors.yellow('Warning:'), 'Failed to automatically inject themelet js. Make sure inject tags are present in', colors.magenta('portal_normal.' + templateLanguage));
 				}
 
 				cb();

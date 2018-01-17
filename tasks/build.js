@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var del = require('del');
 var fs = require('fs-extra');
-var gutil = require('gulp-util');;
+var log = require('fancy-log');
 var path = require('path');
 var plugins = require('gulp-load-plugins')();
 var replace = require('gulp-replace-task');
@@ -347,7 +347,7 @@ module.exports = function(options) {
 
 	function handleScssError(err) {
 		if (options.watching) {
-			gutil.log(err);
+			log(err);
 
 			this.emit('end');
 		}
