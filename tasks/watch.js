@@ -31,7 +31,7 @@ module.exports = function(options) {
 
 	var runSequence = require('run-sequence').use(gulp);
 
-	var staticFileDirs = ['images', 'js'];
+	var staticFileDirs = ['/../**/*'];
 
 	var webBundleDirName = '.web_bundle_build';
 
@@ -103,8 +103,8 @@ module.exports = function(options) {
 
 	function getTaskArray(rootDir, defaultTaskArray) {
 		var taskArray = defaultTaskArray || [];
-
-		if (staticFileDirs.indexOf(rootDir) > -1) {
+		console.log(rootDir, 'Process UI files that do not fall under the directory structures below');
+		if (staticFileDirs.indexOf(rootDir !== 'WEB-INF' || rootDir !== 'templates' || rootDir !== 'css')) {
 			taskArray = ['deploy:file'];
 		}
 		else if (rootDir === 'WEB-INF') {
